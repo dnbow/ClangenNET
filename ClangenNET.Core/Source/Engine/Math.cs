@@ -3,58 +3,53 @@ using System.Linq;
 using System.Numerics;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace ClangenNET;
 
 /// <summary>
 /// Helper static class for math-related utilities
 /// </summary>
-public static class Math
+public static class MathEx
 {
     public const double REAL_UNIT_INT = 1.0 / (int.MaxValue + 1.0);
     public const double REAL_UNIT_UINT = 1.0 / (uint.MaxValue + 1.0);
+    public const double REAL_UNIT_ULONG = 1.0 / (ulong.MaxValue + 1.0);
 
     /// <summary>
     /// Helper class for faster weighted randoms using <see href="https://www.keithschwarz.com/darts-dice-coins/">Voses's Alias method</see>,
-    /// assuming it will be used again and the weights will not be changed.
+    /// assuming it will be used again and the weights and items will not be changed.
     /// </summary>
-    /// <typeparam name="TResult"></typeparam>
-    public class StaticWeightedRandom<TResult>
+    /// <typeparam name="TResult">The contained type.</typeparam>
+    public class WeightedTableStatic<TResult> : IReadOnlyCollection<TResult>, IEnumerable<TResult>
     {
-        /// <summary>
-        /// A readonly collection of <typeparamref name="TResult"/>
-        /// </summary>
-        private readonly ReadOnlyCollection<TResult> Items;
-
-        /// <summary>
-        /// The total amount of items
-        /// </summary>
-        private readonly int Length;
-
-        /// <summary>
-        /// An array representing an alias table
-        /// </summary>
-        private readonly int[] Alias;
-
-        /// <summary>
-        /// An array representing a probabilty table
-        /// </summary>
         private readonly double[] Probability;
+        private readonly int[] Alias;
         private uint x, y, z, w;
 
-        public StaticWeightedRandom(TResult[] Items, int[] Weights) 
+        /// <summary>
+        /// Readonly collection of <typeparamref name="TResult"/>.
+        /// </summary>
+        public readonly ReadOnlyCollection<TResult> Items;
+
+        /// <summary>
+        /// Total amount of items to choose from.
+        /// </summary>
+        public int Count { get; init; }
+
+        public WeightedTableStatic(TResult[] Items, int[] Weights) 
             : this(Items, Weights, (uint)Environment.TickCount) {}
 
-
-        public StaticWeightedRandom(TResult[] Items, int[] Weights, uint Seed)
+        public WeightedTableStatic(TResult[] Items, int[] Weights, uint Seed)
         {
             if (Items.Length != Weights.Length)
                 throw new IndexOutOfRangeException("Items must match size of weights");
 
             x = Seed; y = 842502087; z = 3579807591; w = 273326509;
 
-            this.Items = new ReadOnlyCollection<TResult>(Items);
-            int SmallCurrent, LargeCurrent, SmallIndex = 0, LargeIndex = 0, Length = this.Length = Items.Length;
+            this.Items = new (Items);
+            int SmallCurrent, LargeCurrent, SmallIndex = 0, LargeIndex = 0, Length = Count = Items.Length;
             double Sum = Weights.Sum();
 
             double[] Probability = new double[Length], NormalProbability = new double[Length];
@@ -95,8 +90,7 @@ public static class Math
         public TResult Next()
         {
             uint t = x ^ (x << 11); x = y; y = z; z = w;
-
-            double R = REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8))) * Length;
+            double R = REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * Count;
             int I = (int)R;
 
             return Items[(R - I) > Probability[I] ? Alias[I] : I];
@@ -106,10 +100,8 @@ public static class Math
         /// Get a certain amount of weighted-random items.
         /// </summary>
         public TResult[] Next(uint Population)
-        { // This method is O(1), but for smaller weights is slightly slower than RandomEx.ChooseFrom(T[], K[], uint)"/>
-          // You shouldnt really worry about this! If something is slowing down its likely not this, its just a note for me
-            if (Population == 0)
-                return Array.Empty<TResult>();
+        {
+            if (Population == 0) return [];
 
             uint t, x = this.x, y = this.y, z = this.z, w = this.w;
             var Items = this.Items;
@@ -121,7 +113,7 @@ public static class Math
             {
                 t = x ^ (x << 11); x = y; y = z; z = w;
 
-                double R = REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8))) * Length;
+                double R = REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * Count;
                 int I = (int)R;
 
                 Results[i] = Items[(R - I) > Probability[I] ? Alias[I] : I];
@@ -147,7 +139,7 @@ public static class Math
             {
                 t = x ^ (x << 11); x = y; y = z; z = w;
 
-                double R = REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8))) * Length;
+                double R = REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * Count;
                 int I = (int)R;
 
                 Array[i] = Items[(R - I) > Probability[I] ? Alias[I] : I];
@@ -156,6 +148,9 @@ public static class Math
 
             this.x = x; this.y = y; this.z = z; this.w = w;
         }
+
+        public IEnumerator<TResult> GetEnumerator() => Items.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => Items.GetEnumerator();
     }
 
     /// <summary>
@@ -197,11 +192,9 @@ public static class Math
         /// <summary>
         /// Generate a random unsigned integer.
         /// </summary>
-        public uint Random()
+        public uint Unsigned()
         {
-            uint t = x ^ (x << 11);
-            x = y; y = z; z = w;
-
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
             return w ^= (w >> 19) ^ t ^ (t >> 8);
         }
 
@@ -210,22 +203,18 @@ public static class Math
         /// type that is within the constraints of <typeparamref name="TResult"/>
         /// </summary>
         /// <typeparam name="TResult">The unsigned integer type</typeparam>
-        public TResult Random<TResult>() where TResult : IUnsignedNumber<TResult>, IMinMaxValue<TResult>, IBinaryInteger<TResult>
+        public TResult Unsigned<TResult>() where TResult : IUnsignedNumber<TResult>, IMinMaxValue<TResult>, IBinaryInteger<TResult>
         {
-            uint t = x ^ (x << 11);
-            x = y; y = z; z = w;
-
-            return TResult.CreateTruncating(REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8))) * uint.CreateTruncating(TResult.MaxValue));
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
+            return TResult.CreateTruncating(REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * ulong.CreateTruncating(TResult.MaxValue));
         }
 
         /// <summary>
         /// Generate a random signed integer.
         /// </summary>
-        public int RandomSigned()
+        public int Signed()
         {
-            uint t = x ^ (x << 11);
-            x = y; y = z; z = w;
-
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
             return (int)(w ^= (w >> 19) ^ t ^ (t >> 8));
         }
 
@@ -234,13 +223,11 @@ public static class Math
         /// type that is within the constraints of <typeparamref name="TResult"/>
         /// </summary>
         /// <typeparam name="TResult">The signed integer type</typeparam>
-        public TResult RandomSigned<TResult>() where TResult : ISignedNumber<TResult>, IMinMaxValue<TResult>, IBinaryInteger<TResult>
+        public TResult Signed<TResult>() where TResult : ISignedNumber<TResult>, IMinMaxValue<TResult>, IBinaryInteger<TResult>
         {
-            uint t = x ^ (x << 11);
-            x = y; y = z; z = w;
-
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
             int Min = int.CreateTruncating(TResult.MinValue);
-            return TResult.CreateTruncating(Min + (int)(REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8))) * (int.CreateTruncating(TResult.MaxValue) - Min)));
+            return TResult.CreateTruncating(Min + (int)(REAL_UNIT_INT * (int)(w ^= (w >> 19) ^ t ^ (t >> 8)) * (long.CreateTruncating(TResult.MaxValue) - Min)));
         }
 
         /// <summary>
@@ -248,14 +235,12 @@ public static class Math
         /// </summary>
         /// <param name="maxValue">The maximum value the integer can be (exclusive)</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public int RandomSigned(int maxValue)
+        public int Signed(int maxValue)
         {
             if (maxValue < 0)
                 throw new ArgumentOutOfRangeException(nameof(maxValue), maxValue, "maxValue must be >= 0");
 
-            uint t = x ^ (x << 11);
-            x = y; y = z; z = w;
-
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
             return (int)(REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8))) * maxValue);
         }
 
@@ -266,29 +251,75 @@ public static class Math
         /// <param name="minValue">The minimum value the integer can be (inclusive)</param>
         /// <param name="maxValue">The maximum value the integer can be (exclusive)</param>
         /// <exception cref="ArgumentOutOfRangeException"></exception>
-        public int RandomSigned(int minValue, int maxValue)
+        public int Signed(int minValue, int maxValue)
         {
             if (minValue > maxValue || maxValue == minValue)
                 throw new ArgumentOutOfRangeException(nameof(maxValue), maxValue, "maxValue must be greater than minValue");
 
-            uint t = x ^ (x << 11);
-            x = y; y = z; z = w;
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
 
             int range = maxValue - minValue;
             if (range < 0)
-                return minValue + (int)(REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * (maxValue - minValue));
+                return minValue + (int)(REAL_UNIT_INT * (int)(w ^= (w >> 19) ^ t ^ (t >> 8)) * range);
             
-            return minValue + (int)(REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8))) * range);
+            return minValue + (int)(REAL_UNIT_INT * (int)(w ^= (w >> 19) ^ t ^ (t >> 8)) * range);
         }
 
         /// <summary>
         /// Generate a random double greater than or equal to 0 and less than 1
         /// </summary>
-        public double Double()
+        public double Percent()
         {
-            uint t = x ^ (x << 11);
-            x = y; y = z; z = w;
-            return REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8)));
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
+            return REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8));
+        }
+
+        /// <summary>
+        /// Generate a random boolean value based on a given probability. If <paramref name="Chance"/> is 1
+        /// or greater, it will return <see langword="true"/>.
+        /// </summary>
+        /// <param name="Chance">A double greater than 0 and less than 1</param>
+        public bool Chance(double Chance)
+        {
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
+            return (w ^= (w >> 19) ^ t ^ (t >> 8)) < (Chance * uint.MaxValue);
+        }
+
+        /// <summary>
+        /// Generate a random boolean value based on 2 ^ <paramref name="Exponant"/>. If <paramref name="Exponant"/> is above 64,
+        /// it will be used asif it were 64
+        /// </summary>
+        /// <param name="Exponent">Number between 0 and 32</param>
+        public bool ChanceEx2(float Exponent)
+        {
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
+            return (REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * Math.Pow(2, Exponent)) == 0;
+
+        }
+
+        /// <summary>
+        /// Generate a random boolean value based on 1 / <paramref name="Chance"/>. If <paramref name="Chance"/> is 1
+        /// or greater, it will return <see langword="true"/>.
+        /// </summary>
+        /// <param name="Chance">A double greater than 0 and less than 1</param>
+        public bool InverseChance(int Chance)
+        {
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
+            return (REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * (1 / Chance.ClampTo(1, int.MaxValue))) == 0;
+        }
+
+        /// <summary>
+        /// Generate a random boolean.
+        /// </summary>
+        public bool Choose()
+        {
+            if (BitMask == 1)
+            {
+                uint t = x ^ (x << 11); x = y; y = z; z = w;
+                return ((BitBuffer = w ^= (w >> 19) ^ t ^ (t >> 8)) & (BitMask = 0x8000000)) == 0;
+            }
+
+            return (BitBuffer & (BitMask >>= 1)) == 0;
         }
 
         /// <summary>
@@ -311,8 +342,7 @@ public static class Math
 
             if (i < Buffer.Length)
             {
-                t = x ^ (x << 11);
-                x = y; y = z; z = w;
+                t = x ^ (x << 11); x = y; y = z; z = w;
                 w ^= (w >> 19) ^ t ^ (t >> 8);
 
                 Buffer[i++] = (byte)w;
@@ -375,18 +405,6 @@ public static class Math
         }
 
         /// <summary>
-        /// Generate a random boolean value based on a given probability. If <paramref name="Chance"/> is 1
-        /// or greater, it will return <see langword="true"/>.
-        /// </summary>
-        /// <param name="Chance">A double greater than 0 and less than 1.</param>
-        public bool Chance(double Chance)
-        {
-            uint t = x ^ (x << 11);
-            x = y; y = z; z = w;
-            return (w ^= (w >> 19) ^ t ^ (t >> 8)) < (Chance * uint.MaxValue);
-        }
-
-        /// <summary>
         /// Shuffles given Array randomly.
         /// </summary>
         /// <param name="Array">The array to shuffle</param>
@@ -424,17 +442,44 @@ public static class Math
         }
 
         /// <summary>
-        /// Generate a random boolean.
+        /// Return a random value from a given enum.
         /// </summary>
-        public bool Choose()
+        /// <typeparam name="TEnum">The enum to give</typeparam>
+        /// <exception cref="ArgumentException"></exception>
+        public TEnum ChooseEnum<TEnum>() where TEnum : struct, Enum
         {
-            if (BitMask == 1)
+            TEnum[] EnumValues = Enum.GetValues<TEnum>();
+
+            if (EnumValues.Length == 0)
+                throw new ArgumentException("Enum has no value", nameof(TEnum));
+
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
+            return EnumValues[(uint)(REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * EnumValues.Length)];
+        }
+
+        /// <summary>
+        /// Return a given amount of random of items from given enum.
+        /// </summary>
+        /// <typeparam name="TEnum">The enum to give</typeparam>
+        /// <exception cref="ArgumentException"></exception>
+        public TEnum[] ChooseEnum<TEnum>(uint Population) where TEnum : struct, Enum
+        {
+            TEnum[] EnumValues = Enum.GetValues<TEnum>();
+
+            if (EnumValues.Length == 0)
+                throw new ArgumentException("Enum has no value", nameof(TEnum));
+
+            TEnum[] Results = new TEnum[Population];
+            uint t, x = this.x, y = this.y, z = this.z, w = this.w;
+
+            for (uint i = 0; i < Population; i++)
             {
-                uint t = x ^ (x << 11); x = y; y = z; z = w;
-                return ((BitBuffer = w ^= (w >> 19) ^ t ^ (t >> 8)) & (BitMask = 0x8000000)) == 0;
+                t = x ^ (x << 11); x = y; y = z; z = w;
+                Results[i] = EnumValues[(uint)(REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * EnumValues.Length)];
             }
 
-            return (BitBuffer & (BitMask >>= 1)) == 0;
+            this.x = x; this.y = y; this.z = z; this.w = w;
+            return Results;
         }
 
         /// <summary>
@@ -447,44 +492,38 @@ public static class Math
             if (Array.Length == 0)
                 throw new ArgumentException("Array is empty", nameof(Array));
 
-            uint t = x ^ (x << 11);
-            x = y; y = z; z = w;
-            return Array[(uint)(REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8))) * Array.Length)];
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
+            return Array[(uint)(REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * Array.Length)];
         }
 
         /// <summary>
-        /// Return a weighted item from given array. weights must be a <see cref="ISignedNumber{TSelf}"/> object
+        /// Return a random item from given 2-dimenseonal array.
         /// </summary>
         /// <param name="Array">Array to choose from</param>
-        /// <param name="Weights">The weights to adhere to</param>
-        /// <exception cref="ArgumentException">Array or weights are empty, or Array isnt the size of weights</exception>
-        public TResult ChooseFrom<TResult, WeightType>(TResult[] Array, WeightType[] Weights) where WeightType : ISignedNumber<WeightType>
-        { // We could define K individually in functions i.e int[] weights, but on Release it is anywhere from 0 ms - 3 ms slower so I don think it matters
+        /// <exception cref="ArgumentException">Array is empty</exception>
+        public TResult ChooseFrom<TResult>(TResult[][] Array)
+        {
             if (Array.Length == 0)
                 throw new ArgumentException("Array is empty", nameof(Array));
-            else if (Weights.Length == 0)
-                throw new ArgumentException("weights is empty", nameof(Weights));
-            else if (Weights.Length != Array.Length)
-                throw new ArgumentException("weights length must be the same as the given Arrays' length");
 
-            WeightType RemainingDistance = WeightType.Zero;
-            for (int i = 0; i < Weights.Length; i++)
-                RemainingDistance += Weights[i];
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
+            uint F = (uint)(REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * Array.Length);
+            t = x ^ (x << 11); x = y; y = z; z = w;
+            return Array[F][(uint)(REAL_UNIT_UINT * (w ^= (w >> 19) ^ t ^ (t >> 8)) * Array.Length)];
+        }
 
-            uint t = x ^ (x << 11);
-            x = y; y = z; z = w;
-            RemainingDistance = WeightType.CreateTruncating(
-                double.CreateTruncating(RemainingDistance) * REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8)))
-            );
+        /// <summary>
+        /// Return a random item from given array.
+        /// </summary>
+        /// <param name="Array">Array to choose from</param>
+        /// <exception cref="ArgumentException">Array is empty</exception>
+        public TResult ChooseFrom<TResult>(IList<TResult> Array)
+        {
+            if (Array.Count == 0)
+                throw new ArgumentException("Array is empty", nameof(Array));
 
-            for (int i = 0; i < Weights.Length; i++)
-            {
-                RemainingDistance -= Weights[i];
-                if (WeightType.IsNegative(RemainingDistance))
-                    return Array[i];
-            }
-
-            return Array[0];
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
+            return Array[(int)(REAL_UNIT_UINT * (0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8))) * Array.Count)];
         }
 
         /// <summary>
@@ -515,13 +554,12 @@ public static class Math
         }
 
         /// <summary>
-        /// Return given amount of weighted items from given array. weights must be a <see cref="ISignedNumber{TSelf}"/> object
+        /// Return a weighted item from given array. weights must be a <see cref="ISignedNumber{TSelf}"/> object
         /// </summary>
         /// <param name="Array">Array to choose from</param>
         /// <param name="Weights">The weights to adhere to</param>
-        /// <param name="Population">The amount of items to retrieve</param>
         /// <exception cref="ArgumentException">Array or weights are empty, or Array isnt the size of weights</exception>
-        public TResult[] ChooseFrom<TResult, WeightType>(TResult[] Array, WeightType[] Weights, uint Population) where WeightType : ISignedNumber<WeightType>
+        public TResult ChooseFrom<TResult, TWeight>(TResult[] Array, TWeight[] Weights) where TWeight : ISignedNumber<TWeight>
         {
             if (Array.Length == 0)
                 throw new ArgumentException("Array is empty", nameof(Array));
@@ -529,10 +567,43 @@ public static class Math
                 throw new ArgumentException("weights is empty", nameof(Weights));
             else if (Weights.Length != Array.Length)
                 throw new ArgumentException("weights length must be the same as the given Arrays' length");
-            else if (Population == 0)
-                return System.Array.Empty<TResult>();
 
-            WeightType RemainingDistance = WeightType.Zero, CumulativeWeight = WeightType.Zero;
+            TWeight RemainingDistance = TWeight.Zero;
+            for (int i = 0; i < Weights.Length; i++)
+                RemainingDistance += Weights[i];
+
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
+            RemainingDistance = TWeight.CreateTruncating(
+                double.CreateTruncating(RemainingDistance) * REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8)))
+            );
+
+            for (int i = 0; i < Weights.Length; i++)
+                if (TWeight.IsNegative(RemainingDistance -= Weights[i]))
+                    return Array[i];
+            
+
+            return Array[0];
+        }
+
+        /// <summary>
+        /// Return given amount of weighted items from given array. weights must be a <see cref="ISignedNumber{TSelf}"/> object
+        /// </summary>
+        /// <param name="Array">Array to choose from</param>
+        /// <param name="Weights">The weights to adhere to</param>
+        /// <param name="Population">The amount of items to retrieve</param>
+        /// <exception cref="ArgumentException">Array or weights are empty, or Array isnt the size of weights</exception>
+        public TResult[] ChooseFrom<TResult, TWeight>(TResult[] Array, TWeight[] Weights, uint Population) where TWeight : ISignedNumber<TWeight>
+        {
+            if (Array.Length == 0)
+                throw new ArgumentException("Array is empty", nameof(Array));
+            else if (Weights.Length == 0)
+                throw new ArgumentException("Weights is empty", nameof(Weights));
+            else if (Weights.Length != Array.Length)
+                throw new ArgumentException("Weights length must be the same as the given Arrays' length", nameof(Weights));
+            else if (Population == 0)
+                return [];
+
+            TWeight RemainingDistance = TWeight.Zero, CumulativeWeight = TWeight.Zero;
             for (int i = 0; i < Weights.Length; i++)
                 CumulativeWeight += Weights[i];
 
@@ -543,14 +614,14 @@ public static class Math
             for (uint i = 0; i < Population; i++)
             {
                 t = x ^ (x << 11); x = y; y = z; z = w;
-                RemainingDistance = WeightType.CreateTruncating(
+                RemainingDistance = TWeight.CreateTruncating(
                     double.CreateTruncating(RemainingDistance) * REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8)))
                 );
 
                 for (int k = 0; k < Weights.Length; k++)
                 {
                     RemainingDistance -= Weights[k];
-                    if (WeightType.IsNegative(RemainingDistance))
+                    if (TWeight.IsNegative(RemainingDistance))
                     {
                         Results[i] = Array[k];
                         break;
@@ -560,6 +631,28 @@ public static class Math
 
             this.x = x; this.y = y; this.z = z; this.w = w;
             return Results;
+        }
+
+        /// <summary>
+        /// Return an index according to given weights.
+        /// </summary>
+        /// <param name="Weights">The weights to adhere to</param>
+        public uint ChooseFromWeights<TWeight>(TWeight[] Weights) where TWeight : ISignedNumber<TWeight>
+        {
+            TWeight RemainingDistance = TWeight.Zero;
+            for (int i = 0; i < Weights.Length; i++)
+                RemainingDistance += Weights[i];
+
+            uint t = x ^ (x << 11); x = y; y = z; z = w;
+            RemainingDistance = TWeight.CreateTruncating(
+                double.CreateTruncating(RemainingDistance) * REAL_UNIT_INT * (int)(0x7FFFFFFF & (w ^= (w >> 19) ^ t ^ (t >> 8)))
+            );
+
+            for (uint i = 0; i < Weights.Length; i++)
+                if (TWeight.IsNegative(RemainingDistance -= Weights[i]))
+                    return i;
+
+            return 0;
         }
     }
 }

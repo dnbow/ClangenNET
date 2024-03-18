@@ -1,69 +1,65 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
-using ClangenNET;
-using ClangenNET.Factions;
+namespace ClangenNET;
 
-using static ClangenNET.Utility;
-
-namespace ClangenNET
+public static partial class Runtime
 {
-    public enum GamemodeType : byte
+    public static World ThisWorld { get; private set; } = null;
+}
+
+public enum GamemodeType : byte
+{
+    Classic, Expanded, Cruel
+}
+
+public enum Season : byte
+{
+    Summer, Autumn, Winter, Spring
+}
+
+
+
+public class World
+{
+    public readonly FileInfo File;
+
+
+    public readonly Season Season;
+
+
+    public readonly GamemodeType GameMode;
+
+
+    public uint Moon { get; private set; } = 0;
+
+
+    public World(FileInfo File, Season Season, GamemodeType GameMode)
     {
-        Classic, Expanded, Cruel
+        this.File = File;
+        this.Season = Season;
+        this.GameMode = GameMode;
     }
 
-    public enum Season : byte
+
+    public void Save()
     {
-        Summer, Autumn, Winter, Spring
+        byte[] StaticChunk = [
+            Runtime.MAJOR, Runtime.MINOR, Runtime.REVISION & 0xFF, (Runtime.REVISION & 0xFF00) >> 8, // Version data
+            (byte)GameMode, (byte)Season
+        ];
+
+
+        using StreamWriter Stream = new(File.FullName, false, System.Text.Encoding.Unicode, 65536);
+
+
+        Stream.Write(StaticChunk);
     }
 
 
 
-    public partial class WorldView
+    public static World Load(ReadOnlySpan<byte> Data)
     {
-
-    }
-
-
-
-    public partial class World
-    {
-        public string SaveName;
-
-
-        public GamemodeType GameMode;
-
-
-        public Season Season;
-
-
-        public uint Moon { get; private set; } = 0;
-
-
-        public readonly PlayerClan Clan;
-
-
-        public World()
-        {
-
-        }
-
-
-        public bool Save()
-        {
-            string Path = $"Saves\\Test.sav"; // Points to one file for now
-
-            using (FileStream Output = File.OpenWrite(Path))
-            {
-                Output.Write(
-                    new byte[]
-                    {
-                        Version.Major, Version.Minor, Version.Revision & 0xFF, (Version.Revision & 0xFF00) >> 8, // Version data
-                    }
-                );
-            }
-
-            return true;
-        }
+        throw new NotImplementedException();
     }
 }

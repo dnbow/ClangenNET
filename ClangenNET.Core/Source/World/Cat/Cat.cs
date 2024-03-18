@@ -1,41 +1,15 @@
 ﻿using System;
-using System.Linq;
 using System.Collections.Generic;
-
+using System.Linq;
+using static ClangenNET.Runtime;
 using static ClangenNET.Utility;
-using static ClangenNET.Context;
-using System.Runtime.CompilerServices;
 
 namespace ClangenNET;
 
-public static partial class Context
+public static partial class Runtime
 {
-    private static readonly Dictionary<ushort, Cat> Cats = new(512);
-    private static ushort LastCatId = 0;
-
-    /// <summary>
-    /// Represents a reference to a <see cref="Cat"> object
-    /// </summary>
-    public readonly struct CatRef
-    {
-        public static readonly CatRef None = new(0);
-
-        /// <summary>
-        /// The ID of the <see cref="Cat"/> object
-        /// </summary>
-        public readonly ushort Id = 0;
-
-        public CatRef(ushort Id)
-        {
-            this.Id = Id;
-        }
-
-        public bool IsValid() => Id > 0;
-
-        public static implicit operator Cat(CatRef Value) => Cats[Value.Id];
-        public static implicit operator CatRef(Cat Value) => new(Value.Id);
-    }
-
+    internal static Dictionary<ushort, Cat> Cats = new(512);
+    internal static ushort LastCatId = 0;
 
     public static ushort AddCat(Cat Cat)
     {
@@ -49,56 +23,58 @@ public static partial class Context
             else
                 break;
 
-        if (CatWithThisIdExists)
-            NewId = (ushort)(1 + Cats.Keys.Max()); // If no id is found, just skip to getting the max
+        if (CatWithThisIdExists) // If no id is found, just skip to getting the max
+            NewId = (ushort)(1 + Cats.Keys.Max());
 
         Cats[NewId] = Cat;
         return LastCatId = NewId;
     }
+
+    public static Cat GetCat(ushort Id) => Cats.TryGetValue(Id, out Cat Existing) ? Existing : null;
 }
 
 
 
+/// <summary>
+/// Represents a reference to a <see cref="Cat"> object
+/// </summary>
+public readonly struct CatRef(ushort Id)
+{
+    public static readonly CatRef None = new(0);
+
+    /// <summary>
+    /// The ID of the <see cref="Cat"/> object
+    /// </summary>
+    public readonly ushort Id = Id;
+
+    /// <summary>
+    /// Boolean of if this CatRef leads anywhere.
+    /// </summary>
+    public readonly bool IsValid = 0 < Id && Id <= LastCatId;
+
+    public static implicit operator Cat(CatRef Value) => Cats.TryGetValue(Value.Id, out Cat Existing) ? Existing : null;
+    public static implicit operator CatRef(Cat Value) => new(Value.Id);
+}
+
+
 public partial class Cat : IEquatable<Cat>
 {
+
+
     /// <summary>
-    /// Helper interface to allow for different naming conventions.
+    /// Represents a set of translation keys pointing to Pronouns.
     /// </summary>
-    public interface IName
+    public readonly struct Pronoun // TODO revisit
     {
-        /// <summary>
-        /// Create a Name regardless of any given condition, returns whether or not name creation was successful.
-        /// </summary>
-        public bool Create();
+        public readonly TranslationKey Subject;
 
-        /// <summary>
-        /// Create a Name from a given Cat, returns whether or not name creation was successful. <br/>
-        /// This doesnt have to be implemented, but it allows people to create a name conditionally based around the cat.
-        /// </summary>
-        public bool Create(Cat Cat)
-        {
-            return Create();
-        }
+        public readonly TranslationKey Object;
 
-        /// <summary>
-        /// Checks if this name is valid.
-        /// </summary>
-        public bool IsValidName();
+        public readonly TranslationKey Possesive;
 
-        /// <summary>
-        /// Returns this name in string form.
-        /// </summary>
-        public string GetName();
-    }
+        public readonly TranslationKey Inpossesive;
 
-
-
-    public readonly struct PronounRef
-    {
-        /// <summary>
-        /// The Identifer to be used in saves, and when getting Pronoun string variants
-        /// </summary>
-        public readonly string Id;
+        public readonly TranslationKey Reflexive;
 
         /// <summary>
         /// Represents <see langword="true"/> if this pronoun is Plural, <see langword="false"/> 
@@ -107,45 +83,60 @@ public partial class Cat : IEquatable<Cat>
         public readonly bool Conjugate; // TEMP
     }
 
+    /// <summary>
+    /// Helper interface to allow for different naming conventions.
+    /// </summary>
+    public interface ICatName
+    {
+        /// <summary>
+        /// Method to create an <see cref="ICatName"/> regardless of any given condition, returns whether or not name creation was successful.
+        /// </summary>
+        public bool Create();
 
+        /// <summary>
+        /// Method to create a Name from a given <see cref="Cat"/>, returns whether or not <see cref="ICatName"/> creation was successful. <br/>
+        /// This doesnt have to be implemented, but it allows people to create a name conditionally based around the cat.
+        /// </summary>
+        public bool Create(Cat Cat) => Create();
+
+        /// <summary>
+        /// Method to check if this <see cref="ICatName"/> is valid.
+        /// </summary>
+        public bool IsValidName();
+
+        /// <summary>
+        /// Method to return a string representation of this <see cref="ICatName"/>.
+        /// </summary>
+        public string GetName();
+    }
 
     public enum AgeStage : byte
     {
-        Newborn,
-        Kitten,
-        Adolescent,
-        YoungAdult,
-        Adult,
-        SeniorAdult,
-        Senior
+        Newborn, Kitten, Adolescent, YoungAdult, Adult, SeniorAdult, Senior
     }
 
     /// <summary>
-    /// A non-zero, unique unsigned short that should only be assigned by <see cref="CatManager"/> (in constructor of course)
+    /// Non-zero, unique number that should only be assigned by <see cref="CatManager"/> (in constructor of course)
     /// </summary>
     public readonly ushort Id;
 
     /// <summary>
-    /// An unsigned integer used as a starting seed for this cats' generation.
+    /// Number used as a starting seed for this cats' generation.
     /// </summary>
     public readonly uint Seed;
 
     /// <summary>
-    /// The Cats name. Use <see cref="IName.GetName()"/> to get string representation, see 
-    /// <see cref="IName"/> for more info
+    /// This cats name.
     /// </summary> 
-    public readonly IName Name;
+    public readonly ICatName Name;
 
     /// <summary>
-    /// A bool representing biological sex -> <see langword="true"/> for Male and <see langword="false"/> for Female.
+    /// Biological sex -> <see langword="true"/> for Male and <see langword="false"/> for Female.
     /// </summary>
     public readonly bool Sex;
 
 
     public readonly Looks Looks;
-
-
-    public readonly Health Health;
 
     /// <summary>
     /// The moon a cat was born
@@ -159,7 +150,7 @@ public partial class Cat : IEquatable<Cat>
     public TranslationKey Thought;
 
     /// <summary>
-    /// Get <see cref="Age"/> Enum based on this cats age assuming of course theyre still alive
+    /// Get <see cref="AgeStage"/> Enum based on this cats age (gathered from birth to dead).
     /// </summary>
     public AgeStage Age => (ThisWorld.Moon - BirthMoon) switch
     {
@@ -169,23 +160,21 @@ public partial class Cat : IEquatable<Cat>
         <  48 => AgeStage.YoungAdult,
         <  96 => AgeStage.Adult,
         < 120 => AgeStage.SeniorAdult,
-        _ => AgeStage.Senior
+            _ => AgeStage.Senior
     };
 
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public bool IsAlive() => !Health.Dead;
+    /// <summary>
+    /// The biological age of this Cat. If this cat dies, they will stay as their biological age.
+    /// </summary>
+    public uint Moons { get; internal set; }
 
+    /// <summary>
+    /// The chronological age of this Cat. If this cat dies, this will continue to tick.
+    /// </summary>
+    public uint MoonsChronological => ThisWorld.Moon - BirthMoon;
 
     public static bool operator ==(Cat Cat, CatRef Ref) => Cat.Id == Ref.Id;
     public static bool operator !=(Cat Cat, CatRef Ref) => Cat.Id != Ref.Id;
-
-
-    public Cat()
-    {
-
-    }
-
-
     public override string ToString() => $"CAT {Id} {Seed}";
     public override bool Equals(object obj) => Equals(obj as Cat);
     public override int GetHashCode() => (int)Seed;
@@ -196,24 +185,8 @@ public partial class Cat : IEquatable<Cat>
     public bool Equals(Cat Cat) => ReferenceEquals(this, Cat) || Id == Cat.Id;
 
     /// <summary>
-    /// Kills a cat, but in a reversable way.
+    /// Checks if this Cat is considered a baby.
     /// </summary>
-    /// <param name="BodyIsRecovered">Whether or not the body of the deceased was found</param>
-    public void Kill(bool BodyIsRecovered)
-    {
-        Health.Die();
-        Faction.OnDeath(this, BodyIsRecovered);
-    }
-
-    /// <summary>
-    /// Kills a cat in such a way that there is no way to bring them back without regenerating from
-    /// seed, which could be identical to them before they died or a version of them from many moons ago.
-    /// </summary>
-    public void KillForever()
-    {
-        Health.Die();
-        Faction.OnPermaDeath(this);
-    }
-
+    public bool IsBaby() => Moons < 6;
 
 }

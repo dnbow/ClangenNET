@@ -1,56 +1,48 @@
 ﻿using System;
 
-using static ClangenNET.Context;
+namespace ClangenNET;
 
-namespace ClangenNET
+[Flags]
+public enum RelationType : byte
 {
-    [Flags]
-    public enum RelationType : byte
-    {
-        None = 0x0,
-        Romantic = 0x1,
-        Platonic = 0x2,
-    }
+    None = 0x0,
+    Romantic = 0x1,
+    Platonic = 0x2,
+}
 
 
 
-    public enum KinRelationType : byte
-    {
-        None,
-        Child,
-        Parent,
-        Sibling,
-        Cousin,
-    }
+public enum KinRelationType : byte
+{
+    None, Child, Parent, Sibling, Cousin
+}
 
 
 
-    public struct Relation
-    {
-        public readonly CatRef Source;
-        public readonly CatRef Target;
+public struct Relation
+{
+    public readonly CatRef Source;
+    public readonly CatRef Target;
 
 
-        public readonly RelationType Type;
-         
-        public readonly KinRelationType KinType;
-
-        /// <summary>
-        /// A byte representing how much a <see cref="Cat"/> knows about another <see cref="Cat"/>.
-        /// </summary>
-        public byte Familiarity;
-
-        /// <summary>
-        /// A signed byte representing how much a <see cref="Cat"/> likes or dislikes another 
-        /// <see cref="Cat"/>. -128 is reserved for irreversable hate.
-        /// </summary>
-        public sbyte Approval;
-    }
+    public readonly KinRelationType KinType;
 
 
+    public RelationType Type;
 
-    public class Relations
-    {
+    /// <summary>
+    /// Byte representing how loyal a <see cref="Cat"/> is to another <see cref="Cat"/>.
+    /// </summary>
+    public byte Loyalty;
 
-    }
+    /// <summary>
+    /// Byte representing how much a <see cref="Cat"/> knows about another <see cref="Cat"/>.
+    /// </summary>
+    public byte Familiarity;
+
+    /// <summary>
+    /// Signed byte representing how much a <see cref="Cat"/> likes or dislikes another 
+    /// <see cref="Cat"/>. -128 reserved for irreversable hate.
+    /// </summary>
+    public sbyte Approval;
 }

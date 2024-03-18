@@ -1,50 +1,51 @@
-﻿using System;
-using System.IO;
-using System.Security.Cryptography;
-using System.Diagnostics;
-
+﻿using ClangenNET.Graphics;
+using FontStashSharp;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.IO;
 
-using static ClangenNET.Utility;
-
-namespace ClangenNET.Core
+namespace ClangenNET
 {
     internal static class Program
     {
         public static void Main(string[] Args)
         {
-            using (var Algorithm = SHA256.Create())
-            {
-                var Timer = new Stopwatch();
-
-                Timer.Restart();
-                byte[] Hash = ComputeHash(Algorithm, new DirectoryInfo("Common"), SearchOption: SearchOption.AllDirectories).GetAwaiter().GetResult();
-                Timer.Stop();
-
-                Console.WriteLine($"{string.Join("", Convert.ToHexString(Hash)).Replace("-", string.Empty)}.END\n1 Taken {Timer.ElapsedMilliseconds} ms");
-            }
-
             L10N.LoadLanguages("Common\\Localisation\\Languages.yml");
             Console.WriteLine(L10N.SetLanguage("LEnglish"));
-            Console.WriteLine(L10N.GetText("Backstory.Kittypet3"));
+            Console.WriteLine(L10N.Get("Backstory.Kittypet3"));
 
-            using (ClangenNetGame Game = new ())
+            ClangenNetGame Game = null;
+            
+            try
             {
+                Game = new();
+
+                Runtime.Create(Game);
+
                 Game.Run();
+            }
+            finally
+            {
+                Game?.Dispose();
             }
         }
     }
 
     public class ClangenNetGame : Game
     {
-        private GraphicsDeviceManager Graphics;
-        private SpriteBatch Batch;
+        private readonly GraphicsDeviceManager Graphics;
+        private FontSystem Fonts;
+        private SpriteBatchEx Batch;
 
         public ClangenNetGame()
         {
-            Graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this)
+            {
+                GraphicsProfile = GraphicsProfile.HiDef
+            };
+
             Content.RootDirectory = "Common";
             IsMouseVisible = true;
         }
@@ -59,14 +60,22 @@ namespace ClangenNET.Core
 
         protected override void LoadContent()
         {
-            Batch = new SpriteBatch(GraphicsDevice);
+            Batch = new SpriteBatchEx(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            Fonts = new FontSystem();
+            //Fonts.CurrentAtlasFull += (e, a) => Fonts.Reset();
+            //^ Faster performance with fonts, but causes sync errors every now and again - need to fix
+
+            //Fonts.AddFont(File.ReadAllBytes("C:\\Users\\dnbow\\OneDrive\\Desktop\\ClangenNET\\ClangenNET.Core\\Common\\Fonts\\Clangen.ttf"));
+            Fonts.AddFont(File.ReadAllBytes("C:\\Users\\dnbow\\OneDrive\\Desktop\\ClangenNET\\ClangenNET.Core\\Common\\Fonts\\NotoSans.ttf"));
+
+            //foreach (FileInfo File in new DirectoryInfo(".\\Common\\Fonts").EnumerateFiles("*.ttf", SearchOption.AllDirectories))Fonts.AddFont(System.IO.File.ReadAllBytes(File.FullName));
+
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Microsoft.Xna.Framework.Input.Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             // TODO: Add your update logic here
@@ -76,9 +85,12 @@ namespace ClangenNET.Core
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.CornflowerBlue );
 
             Batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+
+            //Runtime.GetScene().Draw(Batch);
+
             Batch.End();
 
             base.Draw(gameTime);

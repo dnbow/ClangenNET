@@ -10,7 +10,7 @@
 using System.Collections;
 using System.IO;
 
-namespace ClangenNET.Core;
+namespace ClangenNET;
 
 public static class Settings // FIX -> this works but everything is explicit and kinda icky
 {

@@ -3,27 +3,29 @@ using System.Collections.Generic;
 
 namespace ClangenNET;
 
-public abstract class Condition
+public enum ConditionSeverity
 {
-
+    Minor, Major, Severe
 }
 
+public struct Condition
+{
+    public struct Stage
+    {
 
-public class Health
+    }
+
+    public readonly string Id;
+    public readonly Stage[] Stages;
+}
+
+public partial class Cat
 {
     public bool Dead { get; private set; } = false;
-
-    public bool Pregnant; // TEMPORARY
 
     public readonly List<Condition> Conditions;
     public readonly List<Condition> Injuries;
     public readonly List<Condition> Illnesses;
-
-
-    /// <summary>
-    /// A signed byte Ranges from -128 to 127, with -128 meaning supernaturally unlucky.
-    /// </summary>
-    public sbyte Luck;
 
 
     public void Die()
