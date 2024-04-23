@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<HerbDefs>
+	<Herb Id ="Betony">
+		<Name>$Herb.Betony</Name>
+	</Herb>
+	<Herb Id ="Blackberry">
+		<Name>$Herb.Blackberry</Name>
+	</Herb>
+	<Herb Id ="Burdock">
+		<Name>$Herb.Burdock</Name>
+	</Herb>
+	<Herb Id ="Catmint">
+		<Name>$Herb.Catmint</Name>
+	</Herb>
+	<Herb Id ="Cobwebs">
+		<Name>$Herb.Cobwebs</Name>
+	</Herb>
+	<Herb Id ="Daisy">
+		<Name>$Herb.Daisy</Name>
+	</Herb>
+	<Herb Id ="Dandelion">
+		<Name>$Herb.Dandelion</Name>
+	</Herb>
+	<Herb Id ="ElderLeaves">
+		<Name>$Herb.ElderLeaves</Name>
+	</Herb>
+	<Herb Id ="Goldenrod">
+		<Name>$Herb.Goldenrod</Name>
+	</Herb>
+	<Herb Id ="Horsetail">
+		<Name>$Herb.Horsetail</Name>
+	</Herb>
+	<Herb Id ="Juniper">
+		<Name>$Herb.Juniper</Name>
+	</Herb>
+	<Herb Id ="Lungwort">
+		<Name>$Herb.Lungwort</Name>
+	</Herb>
+	<Herb Id ="Mallow">
+		<Name>$Herb.Mallow</Name>
+	</Herb>
+	<Herb Id ="Marigold">
+		<Name>$Herb.Marigold</Name>
+	</Herb>
+	<Herb Id ="Moss">
+		<Name>$Herb.Moss</Name>
+	</Herb>
+	<Herb Id ="Mullein">
+		<Name>$Herb.Mullein</Name>
+	</Herb>
+	<Herb Id ="OakLeaves">
+		<Name>$Herb.OakLeaves</Name>
+	</Herb>
+	<Herb Id ="Plantain">
+		<Name>$Herb.Plantain</Name>
+	</Herb>
+	<Herb Id ="Poppy">
+		<Name>$Herb.Poppy</Name>
+	</Herb>
+	<Herb Id ="Ragwort">
+		<Name>$Herb.Ragwort</Name>
+	</Herb>
+	<Herb Id ="Raspberry">
+		<Name>$Herb.Raspberry</Name>
+	</Herb>
+	<Herb Id ="Rosemary">
+		<Name>$Herb.Rosemary</Name>
+	</Herb>
+	<Herb Id ="Tansy">
+		<Name>$Herb.Tansy</Name>
+	</Herb>
+	<Herb Id ="Thyme">
+		<Name>$Herb.Thyme</Name>
+	</Herb>
+	<Herb Id ="WildGarlic">
+		<Name>$Herb.WildGarlic</Name>
+	</Herb>
+</HerbDefs>

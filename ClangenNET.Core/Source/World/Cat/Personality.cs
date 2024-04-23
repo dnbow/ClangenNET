@@ -8,30 +8,22 @@ namespace ClangenNET;
 
 public partial class Cat
 {
-    public enum SkillPath : byte
+    public struct Trait
     {
 
     }
 
-    public string[] Traits; // TODO abstract string to struct type
+    public Trait[] Traits;
 
     /// <summary>
     /// Byte representing the luck of this <see cref="Cat"/>, with -128 is reserved for supernaturally unlucky.
     /// </summary>
     public byte Luck;
 
-    /// <summary>
-    /// Byte representing how fair this <see cref="Cat"/> is.
-    /// </summary>
-    public byte Fairness;
 
-    /// <summary>
-    /// Byte representing how social this <see cref="Cat"/> is.
-    /// </summary>
+    public byte Lawfulness;
+
     public byte Sociability;
 
-    /// <summary>
-    /// Signed byte representing this cats sanity, with -128 resrved for forever insane.
-    /// </summary>
-    public sbyte Sanity;
+    public byte Stability;
 }

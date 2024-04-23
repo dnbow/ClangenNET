@@ -1,37 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using static ClangenNET.Runtime;
-using static ClangenNET.Utility;
+using static ClangenNET.Content;
 
 namespace ClangenNET;
-
-public static partial class Runtime
-{
-    internal static Dictionary<ushort, Cat> Cats = new(512);
-    internal static ushort LastCatId = 0;
-
-    public static ushort AddCat(Cat Cat)
-    {
-        bool CatWithThisIdExists = false;
-        ushort NewId = LastCatId;
-
-        // Try and get an available id for x amount of times because I want to stay away from while loops where possible
-        for (int i = 0; i < 250; i++)
-            if (CatWithThisIdExists = Cats.TryGetValue(++NewId, out Cat _))
-                continue;
-            else
-                break;
-
-        if (CatWithThisIdExists) // If no id is found, just skip to getting the max
-            NewId = (ushort)(1 + Cats.Keys.Max());
-
-        Cats[NewId] = Cat;
-        return LastCatId = NewId;
-    }
-
-    public static Cat GetCat(ushort Id) => Cats.TryGetValue(Id, out Cat Existing) ? Existing : null;
-}
 
 
 
@@ -40,47 +11,33 @@ public static partial class Runtime
 /// </summary>
 public readonly struct CatRef(ushort Id)
 {
+    /// <summary>
+    /// A CatRef leading nowhere.
+    /// </summary>
     public static readonly CatRef None = new(0);
 
     /// <summary>
-    /// The ID of the <see cref="Cat"/> object
+    /// The ID of the <see cref="Cat"/> object.
     /// </summary>
     public readonly ushort Id = Id;
 
     /// <summary>
     /// Boolean of if this CatRef leads anywhere.
     /// </summary>
-    public readonly bool IsValid = 0 < Id && Id <= LastCatId;
+    public readonly bool IsValid = 0 < Id && Id <= Cat.LastCatId;
 
-    public static implicit operator Cat(CatRef Value) => Cats.TryGetValue(Value.Id, out Cat Existing) ? Existing : null;
+    public static implicit operator Cat?(CatRef Value) => Cat.Cats.TryGetValue(Value.Id, out Cat? Existing) ? Existing : null;
     public static implicit operator CatRef(Cat Value) => new(Value.Id);
 }
 
-
-public partial class Cat : IEquatable<Cat>
+public partial class Cat : IEquatable<Cat>, IEquatable<CatRef>
 {
+    internal static readonly Dictionary<ushort, Cat> Cats = new(512);
+    internal static ushort LastCatId = 0;
 
-
-    /// <summary>
-    /// Represents a set of translation keys pointing to Pronouns.
-    /// </summary>
-    public readonly struct Pronoun // TODO revisit
+    public enum AgeStage
     {
-        public readonly TranslationKey Subject;
-
-        public readonly TranslationKey Object;
-
-        public readonly TranslationKey Possesive;
-
-        public readonly TranslationKey Inpossesive;
-
-        public readonly TranslationKey Reflexive;
-
-        /// <summary>
-        /// Represents <see langword="true"/> if this pronoun is Plural, <see langword="false"/> 
-        /// if it is Singular (they > plural > true, he > singular > false).
-        /// </summary>
-        public readonly bool Conjugate; // TEMP
+        Newborn, Kitten, Adolescent, YoungAdult, Adult, SeniorAdult, Senior
     }
 
     /// <summary>
@@ -110,13 +67,8 @@ public partial class Cat : IEquatable<Cat>
         public string GetName();
     }
 
-    public enum AgeStage : byte
-    {
-        Newborn, Kitten, Adolescent, YoungAdult, Adult, SeniorAdult, Senior
-    }
-
     /// <summary>
-    /// Non-zero, unique number that should only be assigned by <see cref="CatManager"/> (in constructor of course)
+    /// Non-zero, unique number.
     /// </summary>
     public readonly ushort Id;
 
@@ -152,7 +104,7 @@ public partial class Cat : IEquatable<Cat>
     /// <summary>
     /// Get <see cref="AgeStage"/> Enum based on this cats age (gathered from birth to dead).
     /// </summary>
-    public AgeStage Age => (ThisWorld.Moon - BirthMoon) switch
+    public AgeStage Age => (BirthMoon) switch // FIX -> doesnt do the from death part, dont know how to hold moons just yet though!
     {
             0 => AgeStage.Newborn,
         <   6 => AgeStage.Kitten,
@@ -164,29 +116,61 @@ public partial class Cat : IEquatable<Cat>
     };
 
     /// <summary>
-    /// The biological age of this Cat. If this cat dies, they will stay as their biological age.
+    /// The biological age of this Cat. If this cat dies, this will stop ticking.
     /// </summary>
     public uint Moons { get; internal set; }
 
     /// <summary>
     /// The chronological age of this Cat. If this cat dies, this will continue to tick.
     /// </summary>
-    public uint MoonsChronological => ThisWorld.Moon - BirthMoon;
+    public uint MoonsChronological => BirthMoon; // FIX
+
+    public static Cat? Get(ushort Id)
+    {
+        return Cats.TryGetValue(Id, out Cat? Existing) ? Existing : null;
+    }
+
+    public Cat(uint Seed)
+    {
+        this.Seed = Seed;
+
+        Cats[++LastCatId] = this;
+        Looks = new(this);
+    }
 
     public static bool operator ==(Cat Cat, CatRef Ref) => Cat.Id == Ref.Id;
     public static bool operator !=(Cat Cat, CatRef Ref) => Cat.Id != Ref.Id;
     public override string ToString() => $"CAT {Id} {Seed}";
-    public override bool Equals(object obj) => Equals(obj as Cat);
+    public override bool Equals(object? Obj)
+    {
+        if (Obj is null)
+            return false;
+        if (Obj is Cat objCat)
+            return Equals(objCat);
+
+        return false;
+    }
+
     public override int GetHashCode() => (int)Seed;
 
     /// <summary>
     /// Check if two cats are the same Cat
     /// </summary>
-    public bool Equals(Cat Cat) => ReferenceEquals(this, Cat) || Id == Cat.Id;
+    public bool Equals(Cat? Cat)
+    {
+        if (Cat is null)
+            return false;
+
+        return ReferenceEquals(this, Cat) || Cat.Id == Id;
+    }
+
+    public bool Equals(CatRef Other)
+    {
+        return Other.Id == Id;
+    }
 
     /// <summary>
     /// Checks if this Cat is considered a baby.
     /// </summary>
     public bool IsBaby() => Moons < 6;
-
 }

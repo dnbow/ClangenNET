@@ -1,76 +1,88 @@
 ﻿using ClangenNET.Graphics;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace ClangenNET
+namespace ClangenNET;
+
+
+
+public static partial class Content
 {
+    private static readonly Dictionary<Type, IScene> SceneInstances = [];
+    private static readonly HashSet<Type> SceneTypes = [];
 
-    public static partial class Runtime
+    /// <summary>
+    /// Get the Current Scene.
+    /// </summary>
+    public static IScene? CurrentScene { get; private set; }
+
+    public static void SetScene<TScene>() where TScene : class, IScene
     {
-        private static readonly Dictionary<Type, IScene> SceneInstances = new ();
-        private static readonly HashSet<Type> SceneTypes = new ();
+        Type SceneType = typeof(TScene);
 
-        /// <summary>
-        /// Get the Current Scene.
-        /// </summary>
-        public static IScene CurrentScene { get; private set; }
+        if (CurrentScene is not null && CurrentScene.GetType() == SceneType)
+            return;
 
-        public static void SwitchToScene<TScene>() where TScene : class, IScene
+        SceneTypes.Add(SceneType);
+
+        if (SceneInstances.TryGetValue(SceneType, out IScene? Existing))
         {
-            if (CurrentScene.GetType() == typeof(TScene))
+            CurrentScene = Existing;
+        }
+        else
+        {
+            TScene? New;
+
+            if ((New = Activator.CreateInstance(SceneType) as TScene) is not null)
+            {
+                CurrentScene?.Close();
+                SceneInstances[SceneType] = CurrentScene = New;
+            }
+            else
+            {
+                Console.WriteLine($"Failed to create Scene of type \"{SceneType.FullName}\"");
                 return;
-
-            CurrentScene.Close();
+            }
         }
 
-        [InternalLoader(typeof(IScene))]
-        static void LoadScene(Type Scene)
-        {
-            SceneTypes.Add(Scene);
-        }
+        CurrentScene.Open();
     }
 }
 
-
-
-namespace ClangenNET.Graphics
+[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+public class SceneInfoAttribute : Attribute
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-    public class SceneInfo : Attribute
+    public readonly string? Id;
+    public readonly bool Discoverable;
+
+    public SceneInfoAttribute() { }
+    public SceneInfoAttribute(string? Id = null, bool Discoverable = true)
     {
-        public readonly string Id = null;
-        public readonly bool Discoverable = true;
-
-        public SceneInfo() { }
-        public SceneInfo(string Id, bool Discoverable)
-        {
-            this.Id = Id;
-            this.Discoverable = Discoverable;
-        }
+        this.Id = Id;
+        this.Discoverable = Discoverable;
     }
+}
 
+public interface IScene
+{
+    /// <summary>
+    /// Method to be called every game tick.
+    /// </summary>
+    internal void Update(GameTime GameTime);
 
+    /// <summary>
+    /// Method to be called when drawing the scene.
+    /// </summary>
+    internal void Draw(SpriteBatchEx Batch);
 
-    public interface IScene
-    {
-        /// <summary>
-        /// Method to be called every game tick.
-        /// </summary>
-        internal void Tick(uint Tick);
+    /// <summary>
+    /// Method to be called when switching to another scene.
+    /// </summary>
+    internal void Close() { }
 
-        /// <summary>
-        /// Method to be called when drawing the scene.
-        /// </summary>
-        internal void Draw(SpriteBatchEx Batch);
-
-        /// <summary>
-        /// Method to be called when switching to another scene.
-        /// </summary>
-        internal void Close() { }
-
-        /// <summary>
-        /// Method to be called when switching to this scene.
-        /// </summary>
-        internal void Open() { }
-    }
+    /// <summary>
+    /// Method to be called when switching to this scene.
+    /// </summary>
+    internal void Open() { }
 }

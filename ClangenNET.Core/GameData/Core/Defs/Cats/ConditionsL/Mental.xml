@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ConditionDefs>
+	<Condition Id = "GriefStricken">
+		<Name>$Condition.GriefStricken</Name>
+		<Severity>Major</Severity>
+		<Duration>5</Duration>
+		<DurationMedicine>3</DurationMedicine>
+		<Risks>
+			<li Id = "LastingGrief" Chance = "0.01"/>
+			<li Id = "ConstantNightmares" Chance = "0.0666667"/>
+		</Risks>
+		<Herbs>
+			<li Id = "Juniper"/>
+			<li Id = "Thyme"/>
+			<li Id = "Poppy"/>
+		</Herbs>
+	</Condition>
+	
+	<Condition Id = "ConstantNightmares">
+		<Name>$Condition.ConstantNightmares</Name>
+		<Severity>Major</Severity>
+		<Duration>2</Duration>
+		<DurationMedicine>1</DurationMedicine>
+		<Herbs>
+			<li Id = "Juniper"/>
+			<li Id = "Thyme"/>
+			<li Id = "Poppy"/>
+		</Herbs>
+	</Condition>
+</ConditionDefs>

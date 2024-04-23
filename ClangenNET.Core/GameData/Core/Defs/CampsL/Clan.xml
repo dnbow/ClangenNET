@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<CampDef>
+	<Camp Id = "Forestcamp2">
+		<LeaderDen>688, 200</LeaderDen>
+		<MedicineDen>210, 400</MedicineDen>
+	</Camp>
+</CampDef>

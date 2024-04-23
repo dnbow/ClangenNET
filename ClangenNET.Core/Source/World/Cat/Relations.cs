@@ -3,7 +3,7 @@
 namespace ClangenNET;
 
 [Flags]
-public enum RelationType : byte
+public enum RelationType
 {
     None = 0x0,
     Romantic = 0x1,
@@ -12,7 +12,7 @@ public enum RelationType : byte
 
 
 
-public enum KinRelationType : byte
+public enum KinRelationType
 {
     None, Child, Parent, Sibling, Cousin
 }

@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<TraitDefs>
+	<Trait Id = "Adventurous">
+		<Name>$Trait.Adventurous</Name>
+	</Trait>
+	
+	<Trait Id = "Ambitious">
+		<Name>$Trait.Ambitious</Name>
+	</Trait>
+	
+	<Trait Id = "Arrogant">
+		<Name>$Trait.Arrogant</Name>
+	</Trait>
+
+	<Trait Id = "Bloodthirsty">
+		<Name>$Trait.Bloodthirsty</Name>
+	</Trait>
+
+	<Trait Id = "Bold">
+		<Name>$Trait.Bold</Name>
+	</Trait>
+
+	<Trait Id = "Calm">
+		<Name>$Trait.Calm</Name>
+	</Trait>
+
+	<Trait Id = "Careful">
+		<Name>$Trait.Careful</Name>
+	</Trait>
+
+	<Trait Id = "Charismatic">
+		<Name>$Trait.Charismatic</Name>
+	</Trait>
+
+	<Trait Id = "Childish">
+		<Name>$Trait.Childish</Name>
+	</Trait>
+
+	<Trait Id = "Cold">
+		<Name>$Trait.Cold</Name>
+	</Trait>
+
+	<Trait Id = "Compassionate">
+		<Name>$Trait.Compassionate</Name>
+	</Trait>
+
+	<Trait Id = "Competitive">
+		<Name>$Trait.Competitive</Name>
+	</Trait>
+
+	<Trait Id = "Confident">
+		<Name>$Trait.Confident</Name>
+	</Trait>
+
+	<Trait Id = "Cunning">
+		<Name>$Trait.Cunning</Name>
+	</Trait>
+
+	<Trait Id = "Daring">
+		<Name>$Trait.Daring</Name>
+	</Trait>
+
+	<Trait Id = "Faithful">
+		<Name>$Trait.Faithful</Name>
+	</Trait>
+
+	<Trait Id = "Fierce">
+		<Name>$Trait.Fierce</Name>
+	</Trait>
+
+	<Trait Id = "Flamboyant">
+		<Name>$Trait.Flamboyant</Name>
+	</Trait>
+
+	<Trait Id = "Gloomy">
+		<Name>$Trait.Gloomy</Name>
+	</Trait>
+
+	<Trait Id = "Grumpy">
+		<Name>$Trait.Grumpy</Name>
+	</Trait>
+
+	<Trait Id = "Insecure">
+		<Name>$Trait.Insecure</Name>
+	</Trait>
+
+	<Trait Id = "Lonesome">
+		<Name>$Trait.Lonesome</Name>
+	</Trait>
+
+	<Trait Id = "Loving">
+		<Name>$Trait.Loving</Name>
+	</Trait>
+
+	<Trait Id = "Loyal">
+		<Name>$Trait.Loyal</Name>
+	</Trait>
+
+	<Trait Id = "Nervous">
+		<Name>$Trait.Nervous</Name>
+	</Trait>
+
+	<Trait Id = "Oblivious">
+		<Name>$Trait.Oblivious</Name>
+	</Trait>
+
+	<Trait Id = "Playful">
+		<Name>$Trait.Playful</Name>
+	</Trait>
+
+	<Trait Id = "Rebellious">
+		<Name>$Trait.Rebellious</Name>
+	</Trait>
+
+	<Trait Id = "Responsible">
+		<Name>$Trait.Responsible</Name>
+	</Trait>
+
+	<Trait Id = "Righteous">
+		<Name>$Trait.Righteous</Name>
+	</Trait>
+
+	<Trait Id = "Shameless">
+		<Name>$Trait.Shameless</Name>
+	</Trait>
+
+	<Trait Id = "Sincere">
+		<Name>$Trait.Sincere</Name>
+	</Trait>
+
+	<Trait Id = "Sneaky">
+		<Name>$Trait.Sneaky</Name>
+	</Trait>
+
+	<Trait Id = "Strange">
+		<Name>$Trait.Strange</Name>
+	</Trait>
+
+	<Trait Id = "Strict">
+		<Name>$Trait.Strict</Name>
+	</Trait>
+
+	<Trait Id = "Thoughtful">
+		<Name>$Trait.Thoughtful</Name>
+	</Trait>
+
+	<Trait Id = "Troublesome">
+		<Name>$Trait.Troublesome</Name>
+	</Trait>
+
+	<Trait Id = "Vengeful">
+		<Name>$Trait.Vengeful</Name>
+	</Trait>
+
+	<Trait Id = "Wise">
+		<Name>$Trait.Wise</Name>
+	</Trait>
+</TraitDefs>
