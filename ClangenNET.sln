@@ -9,13 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{4137E4
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		.gitattributes = .gitattributes
-		.gitignore = .gitignore
 		LICENSE.txt = LICENSE.txt
+		.gitignore = .gitignore
 		README.md = README.md
 		ROADMAP.txt = ROADMAP.txt
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClangenNET.Windows", "ClangenNET.Windows\ClangenNET.Windows.csproj", "{E931EA4B-B484-41CF-B0A6-3399AE328268}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClangenNET.Windows", "ClangenNET.Windows\ClangenNET.Windows.csproj", "{E931EA4B-B484-41CF-B0A6-3399AE328268}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
