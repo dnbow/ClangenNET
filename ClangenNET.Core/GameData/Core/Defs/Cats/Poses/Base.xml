@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<PeltPoseDefs>
+	<PoseDef Id = "Default" Rows = "7" Columns = "3">
+		<li Id = "Kit0" Fallback = "ErrorKitten"/>
+		<li Id = "Kit1" Fallback = "ErrorKitten"/>
+		<li Id = "Kit2" Fallback = "ErrorKitten"/>
+		<li Id = "Adolescent0" Fallback = "ErrorAdolescent"/>
+		<li Id = "Adolescent1" Fallback = "ErrorAdolescent"/>
+		<li Id = "Adolescent2" Fallback = "ErrorAdolescent"/>
+		<li Id = "YoungShort" Fallback = "ErrorYoungAdult"/>
+		<li Id = "AdultShort" Fallback = "ErrorAdult"/>
+		<li Id = "SeniorShort" Fallback = "ErrorSeniorAdult"/>
+		<li Id = "YoungLong" Fallback = "ErrorYoungAdult"/>
+		<li Id = "AdultLong" Fallback = "ErrorAdult"/>
+		<li Id = "SeniorLong" Fallback = "ErrorSeniorAdult"/>
+		<li Id = "Senior0" Fallback = "ErrorSenior"/>
+		<li Id = "Senior1" Fallback = "ErrorSenior"/>
+		<li Id = "Senior2" Fallback = "ErrorSenior"/>
+		<li Id = "ParalyzedShort" Fallback = "ErrorAdult"/>
+		<li Id = "ParalyzedLong" Fallback = "ErrorAdult"/>
+		<li Id = "ParalyzedAdolescent" Fallback = "ErrorAdolescent"/>
+		<li Id = "SickAdult" Fallback = "ErrorAdult"/>
+		<li Id = "SickYoung" Fallback = "ErrorYoungAdult"/>
+		<li Id = "Newborn" Fallback = "ErrorNewborn"/>
+	</PoseDef>
+</PeltPoseDefs>

@@ -1,0 +1,435 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<ConditionDefs>
+	<Condition Id = "Fleas">
+		<Name>$Condition.Fleas</Name>
+		<Severity>Minor</Severity>
+		<Duration>4</Duration>
+		<DurationMedicine>2</DurationMedicine>
+		<Infectiousness>0.065</Infectiousness>
+		<Risks>
+			<li Id = "Torn_Pelt" Chance = "0.05"/>
+		</Risks>
+		<Herbs>
+			<li Id = "Plantain"/>
+		</Herbs>
+	</Condition>
+	
+	<Condition Id ="AcheStomach">
+		<Name>$Condition.AcheStomach</Name>
+		<Severity>Minor</Severity>
+		<Duration>2</Duration>
+		<DurationMedicine>1</DurationMedicine>
+		<Risks>
+			<li Id = "Diarrhea" Chance = "0.125"/>
+		</Risks>
+		<Herbs>
+			<li Id = "Juniper"/>
+			<li Id = "Mallow"/>
+			<li Id = "Ragwort"/>
+			<li Id = "Poppy"/>
+		</Herbs>
+	</Condition>
+	
+	<Condition Id = "RunnyNose">
+		<Name>$Condition.RunnyNose</Name>
+		<Severity>Minor</Severity>
+		<Duration>3</Duration>
+		<DurationMedicine>2</DurationMedicine>
+		<Risks>
+			<li Id = "Whitecough" Chance = "0.0666667"/>
+		</Risks>
+		<Herbs>
+			<li Id = "Ragwort"/>
+			<li Id = "Juniper"/>
+			<li Id = "Poppy"/>
+		</Herbs>
+	</Condition>
+	
+	<Condition Id = "InfectedWound">
+		<Name>$Condition.InfectedWound</Name>
+		<Severity>Major</Severity>
+		<Duration>3</Duration>
+		<DurationMedicine>2</DurationMedicine>
+		<Mortality>
+			<li Age = "Newborn">0.3333333</li>
+			<li Age = "Kitten">0.3333333</li>
+			<li Age = "Adolescent">0.125</li>
+			<li Age = "YoungAdult">0.125</li>
+			<li Age = "Adult">0.1</li>
+			<li Age = "SeniorAdult">0.125</li>
+			<li Age = "Senior">0.02</li>
+		</Mortality>
+		<MortalityMedicine>
+			<li Age = "Newborn">0.2</li>
+			<li Age = "Kitten">0.125</li>
+			<li Age = "Adolescent">0.076923</li>
+			<li Age = "YoungAdult">0.0666667</li>
+			<li Age = "Adult">0.05</li>
+			<li Age = "SeniorAdult">0.0666667</li>
+			<li Age = "Senior">0.076923</li>
+		</MortalityMedicine>
+		<Risks>
+			<li Id = "FesteringWound" Chance = "0.1"/>
+		</Risks>
+		<Herbs>
+			<li Id = "Marigold"/>
+			<li Id = "Burdock"/>
+			<li Id = "WildGarlic"/>
+			<li Id = "Poppy"/>
+		</Herbs>
+
+	</Condition>
+	<Condition Id="FesteringWound">
+		<Name>$Condition.FesteringWound</Name>
+		<Severity>Severe</Severity>
+		<Duration>3</Duration>
+		<DurationMedicine>2</DurationMedicine>
+		<Mortality>
+			<li Age="Newborn">1</li>
+			<li Age="Kitten">1</li>
+			<li Age="Adolescent">0.3333333</li>
+			<li Age="YoungAdult">0.3333333</li>
+			<li Age="Adult">0.2</li>
+			<li Age="SeniorAdult">0.2</li>
+			<li Age="Senior">0.5</li>
+		</Mortality>
+		<MortalityMedicine>
+			<li Age="Newborn">0.3333333</li>
+			<li Age="Kitten">0.3333333</li>
+			<li Age="Adolescent">0.2</li>
+			<li Age="YoungAdult">0.125</li>
+			<li Age="Adult">0.1</li>
+			<li Age="SeniorAdult">0.125</li>
+			<li Age="Senior">0.3333333</li>
+		</MortalityMedicine>
+		<Herbs>
+			<li Id = "Marigold"/>
+			<li Id = "Burdock"/>
+			<li Id = "OakLeaves"/>
+			<li Id = "Ragwort"/>
+			<li Id = "Juniper"/>
+			<li Id = "Poppy"/>
+			<li Id = "Moss"/>
+		</Herbs>
+	</Condition>
+	
+	<Condition Id = "CarrionPlaceDisease">
+		<Name>$Condition.CarrionPlaceDisease</Name>
+		<Severity>Severe</Severity>
+		<Duration>3</Duration>
+		<DurationMedicine>2</DurationMedicine>
+		<Mortality>
+			<li Age = "Newborn">1</li>
+			<li Age = "Kitten">1</li>
+			<li Age = "Adolescent">0.5</li>
+			<li Age = "YoungAdult">0.5</li>
+			<li Age = "Adult">0.5</li>
+			<li Age = "SeniorAdult">0.5</li>
+			<li Age = "Senior">1</li>
+		</Mortality>
+		<MortalityMedicine>
+			<li Age = "Newborn">0.5</li>
+			<li Age = "Kitten">0.5</li>
+			<li Age = "Adolescent">0.3333333</li>
+			<li Age = "YoungAdult">0.3333333</li>
+			<li Age = "Adult">0.3333333</li>
+			<li Age = "SeniorAdult">0.3333333</li>
+			<li Age = "Senior">0.5</li>
+		</MortalityMedicine>
+		<Herbs>
+			<li Id = "Marigold"/>
+			<li Id = "Burdock"/>
+			<li Id = "WildGarlic"/>
+			<li Id = "Poppy"/>
+		</Herbs>
+	</Condition>
+	
+	<Condition Id = "Seizure">
+		<Name>$Condition.Seizure</Name>
+		<Severity>Severe</Severity>
+		<Mortality>
+			<li Age = "Newborn">0.5</li>
+			<li Age = "Kitten">0.2</li>
+			<li Age = "Adolescent">0.1</li>
+			<li Age = "YoungAdult">0.05</li>
+			<li Age = "Adult">0.05</li>
+			<li Age = "SeniorAdult">0.05</li>
+			<li Age = "Senior">0.2</li>
+		</Mortality>
+		<MortalityMedicine>
+			<li Age = "Newborn">0.0333333</li>
+			<li Age = "Kitten">0.02</li>
+			<li Age = "Adolescent">0.0142857</li>
+			<li Age = "YoungAdult">0.01</li>
+			<li Age = "Adult">0.01</li>
+			<li Age = "SeniorAdult">0.01</li>
+			<li Age = "Senior">0.0142857</li>
+		</MortalityMedicine>
+		<Herbs>
+			<li Id = "Juniper"/>
+			<li Id = "Poppy"/>
+			<li Id = "Thyme"/>
+			<li Id = "Ragwort"/>
+		</Herbs>
+	</Condition>
+	
+	<Condition Id = "Diarrhea">
+		<Name>$Condition.Diarrhea</Name>
+		<Severity>Major</Severity>
+		<Duration>2</Duration>
+		<Mortality>
+			<li Age = "Newborn">0.3333333</li>
+			<li Age = "Kitten">0.3333333</li>
+			<li Age = "Adolescent">0.125</li>
+			<li Age = "YoungAdult">0.01</li>
+			<li Age = "Adult">0.0666667</li>
+			<li Age = "SeniorAdult">0.1</li>
+			<li Age = "Senior">0.2</li>
+		</Mortality>
+		<MortalityMedicine>
+			<li Age = "Newborn">0.1</li>
+			<li Age = "Kitten">0.1</li>
+			<li Age = "Adolescent">0.0666667</li>
+			<li Age = "YoungAdult">0.0333333</li>
+			<li Age = "Adult">0.0222222</li>
+			<li Age = "SeniorAdult">0.0333333</li>
+			<li Age = "Senior">0.076923</li>
+		</MortalityMedicine>
+		<Herbs>
+			<li Id = "Betony"/>
+			<li Id = "Mullein"/>
+			<li Id = "Juniper"/>
+			<li Id = "Mallow"/>
+		</Herbs>
+	</Condition>
+	
+	<Condition Id = "Kittencough">
+		<Name>$Condition.Kittencough</Name>
+		<Severity>Severe</Severity>
+		<Duration>3</Duration>
+		<DurationMedicine>2</DurationMedicine>
+		<Mortality>
+			<li Age = "Newborn">0.5</li>
+			<li Age = "Kitten">0.5</li>
+			<li Age = "Adolescent">0.0666667</li>
+			<li Age = "Senior">0.02</li>
+		</Mortality>
+		<MortalityMedicine>
+			<li Age = "Newborn">0.2</li>
+			<li Age = "Kitten">0.2</li>
+			<li Age = "Adolescent">0.0166667</li>
+			<li Age = "Senior">0.1</li>
+		</MortalityMedicine>
+		<Infectiousness>0.0666667</Infectiousness>
+		<Risks>
+			<li Id = "Whitecough" Chance = "0.1"/>
+		</Risks>
+		<Herbs>
+			<li Id = "Catmint"/>
+			<li Id = "Tansy"/>
+			<li Id = "Mullein"/>
+			<li Id = "Plantain"/>
+			<li Id = "Juniper"/>
+			<li Id = "Poppy"/>
+			<li Id = "Moss"/>
+		</Herbs>
+	</Condition>
+	<Condition Id = "Whitecough">
+		<Name>$Condition.Whitecough</Name>
+		<Severity>Major</Severity>
+		<Duration>3</Duration>
+		<DurationMedicine>2</DurationMedicine>
+		<Mortality>
+			<li Age = "Newborn">0.1</li>
+			<li Age = "Kitten">0.1</li>
+			<li Age = "Adolescent">0.2</li>
+			<li Age = "YoungAdult">0.1666667</li>
+			<li Age = "Adult">0.1666667</li>
+			<li Age = "SeniorAdult">0.02</li>
+			<li Age = "Senior">0.1</li>
+		</Mortality>
+		<MortalityMedicine>
+			<li Age = "Newborn">0.0666667</li>
+			<li Age = "Kitten">0.0666667</li>
+			<li Age = "Adolescent">0.1666667</li>
+			<li Age = "YoungAdult">0.0142857</li>
+			<li Age = "Adult">0.0142857</li>
+			<li Age = "SeniorAdult">0.0142857</li>
+			<li Age = "Senior">0.1666667</li>
+		</MortalityMedicine>
+		<Infectiousness>0.0333333</Infectiousness>
+		<Risks>
+			<li Id = "Greencough" Chance = "0.0555556"/>
+		</Risks>
+		<Herbs>
+			<li Id = "Catmint"/>
+			<li Id = "Plantain"/>
+			<li Id = "Tansy"/>
+			<li Id = "Mullein"/>
+			<li Id = "Juniper"/>
+			<li Id = "Ragwort"/>
+			<li Id = "Poppy"/>
+			<li Id = "Moss"/>
+		</Herbs>
+	</Condition>
+	<Condition Id = "Greencough">
+		<Name>$Condition.Greencough</Name>
+		<Severity>Severe</Severity>
+		<Duration>3</Duration>
+		<DurationMedicine>2</DurationMedicine>
+		<Infectiousness>0.0333333</Infectiousness>
+		<Mortality>
+			<li Age = "Newborn">0.3333333</li>
+			<li Age = "Kitten">0.3333333</li>
+			<li Age = "Adolescent">0.125</li>
+			<li Age = "YoungAdult">0.125</li>
+			<li Age = "Adult">0.1</li>
+			<li Age = "SeniorAdult">0.125</li>
+			<li Age = "Senior">0.3333333</li>
+		</Mortality>
+		<MortalityMedicine>
+			<li Age = "Newborn">0.142857</li>
+			<li Age = "Kitten">0.142857</li>
+			<li Age = "Adolescent">0.0833333</li>
+			<li Age = "YoungAdult">0.05</li>
+			<li Age = "Adult">0.04</li>
+			<li Age = "SeniorAdult">0.05</li>
+			<li Age = "Senior">0.142857</li>
+		</MortalityMedicine>
+		<Risks>
+			<li Id = "Yellowcough" Chance = "0.0166667"/>
+		</Risks>
+		<Herbs>
+			<li Id = "Catmint"/>
+			<li Id = "Tansy"/>
+			<li Id = "Mullein"/>
+			<li Id = "Plantain"/>
+			<li Id = "Juniper"/>
+			<li Id = "Poppy"/>
+			<li Id = "Moss"/>
+		</Herbs>
+	</Condition>
+	<Condition Id = "Yellowcough">
+		<Name>$Condition.Yellowcough</Name>
+		<Severity>Major</Severity>
+		<Duration>3</Duration>
+		<Mortality>
+			<li Age = "Newborn">0.5</li>
+			<li Age = "Kitten">0.5</li>
+			<li Age = "Adolescent">0.3333333</li>
+			<li Age = "YoungAdult">0.2</li>
+			<li Age = "Adult">0.2</li>
+			<li Age = "SeniorAdult">0.2</li>
+			<li Age = "Senior">0.3333333</li>
+		</Mortality>
+		<MortalityMedicine>
+			<li Age = "Newborn">0.2</li>
+			<li Age = "Kitten">0.2</li>
+			<li Age = "Adolescent">0.1</li>
+			<li Age = "YoungAdult">0.06666667</li>
+			<li Age = "Adult">0.06666667</li>
+			<li Age = "SeniorAdult">0.06666667</li>
+			<li Age = "Senior">0.2</li>
+		</MortalityMedicine>
+		<Infectiousness>0.03333333</Infectiousness>
+		<Risks>
+			<li Id = "Redcough" Chance = "0.0125"/>
+		</Risks>
+		<Herbs>
+			<li Id = "Lungwort"/>
+		</Herbs>
+	</Condition>
+	<Condition Id = "Redcough">
+		<Name>$Condition.Redcough</Name>
+		<Severity>Severe</Severity>
+		<Duration>0.02</Duration>
+		<DurationMedicine>0.025</DurationMedicine>
+		<Mortality>
+			<li Age = "Newborn">1</li>
+			<li Age = "Kitten">1</li>
+			<li Age = "Adolescent">0.5</li>
+			<li Age = "YoungAdult">0.5</li>
+			<li Age = "Adult">0.5</li>
+			<li Age = "SeniorAdult">0.5</li>
+			<li Age = "Senior">1</li>
+		</Mortality>
+		<MortalityMedicine>
+			<li Age = "Newborn">0.5</li>
+			<li Age = "Kitten">0.5</li>
+			<li Age = "Adolescent">0.3333333</li>
+			<li Age = "YoungAdult">0.3333333</li>
+			<li Age = "Adult">0.3333333</li>
+			<li Age = "SeniorAdult">0.3333333</li>
+			<li Age = "Senior">0.5</li>
+		</MortalityMedicine>
+		<Herbs>
+			<li Id = "Lungwort"/>
+			<li Id = "Mullein"/>
+			<li Id = "Tansy"/>
+			<li Id = "Plantain"/>
+			<li Id = "Juniper"/>
+			<li Id = "Ragwort"/>
+			<li Id = "Poppy"/>
+			<li Id = "Moss"/>
+		</Herbs>
+	</Condition>
+	
+	<Condition Id = "Malnourished">
+		<Name>$Condition.Malnourished</Name>
+		<Severity>Minor</Severity>
+		<Duration>100</Duration>
+		<Herbs>
+			<li Id = "Thyme"></li>
+		</Herbs>
+	</Condition>
+	<Condition Id = "Starving">
+		<Name>$Condition.Starving</Name>
+		<Severity>Severe</Severity>
+		<Duration>100</Duration>
+		<Herbs>
+			<li Id = "Thyme"></li>
+		</Herbs>
+	</Condition>
+	
+	<Condition Id="HeatExhaustion">
+		<Name>$Condition.HeatExhaustion</Name>
+		<Severity>Major</Severity>
+		<Duration>2</Duration>
+		<Risks>
+			<li Id="HeatStoke" Chance ="0.2"/>
+		</Risks>
+		<Helps>
+			<li Id = "Juniper"/>
+			<li Id = "Ragwort"/>
+			<li Id = "Moss"/>
+		</Helps>
+	</Condition>
+	<Condition Id="HeatStroke">
+		<Name>$Condition.HeatStroke</Name>
+		<Severity>Severe</Severity>
+		<Mortality>
+			<li Age="Newborn">0.5</li>
+			<li Age="Kitten">0.5</li>
+			<li Age="Adolescent">0.2</li>
+			<li Age="YoungAdult">0.2</li>
+			<li Age="Adult">0.125</li>
+			<li Age="SeniorAdult">0.125</li>
+			<li Age="Senior">0.3333333</li>
+		</Mortality>
+		<MortalityMedicine>
+			<li Age="Newborn">0.2</li>
+			<li Age="Kitten">0.2</li>
+			<li Age="Adolescent">0.1</li>
+			<li Age="YoungAdult">0.0666667</li>
+			<li Age="Adult">0.05</li>
+			<li Age="SeniorAdult">0.04</li>
+			<li Age="Senior">0.1</li>
+		</MortalityMedicine>
+		<Helps>
+			<li Id = "Juniper"/>
+			<li Id = "Ragwort"/>
+			<li Id = "Moss"/>
+		</Helps>
+	</Condition>
+</ConditionDefs>

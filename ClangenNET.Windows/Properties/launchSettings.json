@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ClangenNET.Windows": {
+      "commandName": "Project",
+      "workingDirectory": "$(SolutionDir)/ClangenNET.Core"
+    }
+  }
+}

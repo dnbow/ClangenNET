@@ -1,0 +1,4 @@
+# FUTURE PLANS
+- proper modding system
+- tribes, rogue groups + playable as player faction
+- dynamic patrols + world map
