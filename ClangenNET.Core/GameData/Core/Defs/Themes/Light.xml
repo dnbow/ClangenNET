@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<Theme Id = "Light">
+	<Background>
+		<Default>655934</Default>
+		<Hovered>1E1809</Hovered>
+		<Selected>655934</Selected>
+		<Active>655934</Active>
+		<Inactive>5C5850</Inactive>
+	</Background>
+	
+	<Text>
+		<Default>EFE5CE</Default>
+		<Hovered>EFE5CE</Hovered>
+		<Selected>EFE5CE</Selected>
+		<Active>EFE5CE</Active>
+		<Inactive>EFE5CE</Inactive>
+
+		<Hyperlink>
+			<Default>B68727</Default>
+			<Hovered>EFE5CE</Hovered>
+			<Selected>3A91A6</Selected>
+			<Shadow>777777</Shadow>
+		</Hyperlink>
+	</Text>
+	
+	<Fonts>
+		<Default>Notosans</Default>
+	</Fonts>
+		
+	<Borders>
+		<Default>776045</Default>
+		<Hovered>291B0F</Hovered>
+		<Selected>776045</Selected>
+		<Active>776045</Active>
+		<Inactive>706B64</Inactive>
+	</Borders>
+</Theme>

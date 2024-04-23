@@ -49,15 +49,16 @@
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="GameData\Core\Defs\Camps\" />
     <Folder Include="GameData\Core\Defs\Cats\Accessories\" />
     <Folder Include="GameData\Core\Defs\Animations\" />
-    <Folder Include="GameData\Core\Defs\BiomesL\" />
+    <Folder Include="GameData\Core\Defs\Biomes\" />
     <Folder Include="GameData\Core\Defs\Misc\" />
     <Folder Include="GameData\Core\Defs\Cats\ScarsL\" />
     <Folder Include="GameData\Core\Resources\Audio\" />
     <Folder Include="Binaries\" />
     <Folder Include="SaveData\Config\" />
-    <Folder Include="Source\Graphics\UI\" />
+    <Folder Include="Source\World\Factions\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
     <Message Text="Restoring dotnet tools" Importance="High" />

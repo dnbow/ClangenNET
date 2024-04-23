@@ -18,7 +18,11 @@
 
 	<!-- (Optional) A list of authors. -->
 	<Authors>
+<<<<<<< HEAD
 		<li>Dimmie</li>
+=======
+		<li>Dnbow</li>
+>>>>>>> master
 	</Authors>
 
 	<!-- (Optional) A list of supported versions. Can be build numbers or version format seen on screen -->

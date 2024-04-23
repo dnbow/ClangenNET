@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+
+<FactionDefs>
+	<Faction Id = "Clan">
+		<Name>Clan</Name>
+		<NameGenerator>ClangenNET.Factions.Clan.NamingConvention</NameGenerator>
+		<Member>clancat</Member>
+		<MemberPlural>clancats</MemberPlural>
+		<MemberKind>clancats</MemberKind>
+		<Roles>
+			<li>Kit</li>
+			<li>Elder</li>
+			<li>Apprentice</li>
+			<li>Warrior</li>
+			<li>MediatorApprentice</li>
+			<li>Mediator</li>
+			<li>HealerApprentice</li>
+			<li>Healer</li>
+			<li>Deputy</li>
+			<li>Leader</li>
+		</Roles>
+	</Faction>
+</FactionDefs>

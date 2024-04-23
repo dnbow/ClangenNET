@@ -225,9 +225,16 @@ public sealed class Menu : IScene
 
     void IScene.Draw(SpriteBatchEx Batch)
     {
+<<<<<<< HEAD
         Batch.Begin();
         NinePointBody.Draw(Batch);
         Batch.End();
+=======
+        DrawOld(Batch);
+        //Batch.Begin();
+        //NinePointBody.Draw(Batch);
+        //Batch.End();
+>>>>>>> master
     }
 
     private void DrawOld(SpriteBatchEx Batch)
